@@ -1,0 +1,5 @@
+write a html with javascript file. allow to pick an image file and preview on html. allow us to tick any place on the previewed image, after tick the page copy the pixel location X and Y of the previewed image into clipboard.
+
+the X and Y has to be exactly PX of the previewed image.
+
+preview the image in original size.
