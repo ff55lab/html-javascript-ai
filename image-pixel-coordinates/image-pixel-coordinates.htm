@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Image Pixel Coordinates</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #preview {
+      border: 1px solid #ccc;
+      margin-top: 10px;
+      cursor: crosshair;
+      display: block;
+    }
+    #coords {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Pick an image and click to copy exact pixel coordinates</h2>
+  <input type="file" id="fileInput" accept="image/*">
+  <br>
+  <img id="preview" alt="Preview will appear here">
+  <div id="coords"></div>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const preview = document.getElementById('preview');
+    const coords = document.getElementById('coords');
+
+    // Load selected image into preview at original size
+    fileInput.addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          preview.onload = () => {
+            // Force original pixel size
+            preview.width = preview.naturalWidth;
+            preview.height = preview.naturalHeight;
+          };
+          preview.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Capture click coordinates in actual image pixels
+    preview.addEventListener('click', function(event) {
+      const rect = preview.getBoundingClientRect();
+
+      // Position relative to displayed size (same as natural size now)
+      const x = Math.round(event.clientX - rect.left);
+      const y = Math.round(event.clientY - rect.top);
+
+      const coordText = `X: ${x}px, Y: ${y}px`;
+      coords.textContent = coordText;
+
+      // Copy to clipboard
+      navigator.clipboard.writeText(coordText).then(() => {
+        alert(`Copied to clipboard: ${coordText}`);
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+      });
+    });
+  </script>
+</body>
+</html>
